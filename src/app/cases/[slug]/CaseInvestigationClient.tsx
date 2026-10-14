@@ -313,6 +313,7 @@ export function CaseInvestigationClient({ slug }: CaseInvestigationClientProps) 
               onToggleStar={handleToggleStarEvidence}
               onInspectEvidence={handleInspectEvidence}
               onSaveNote={handleSaveNote}
+              onDiscoverEvidence={handleDiscoverEvidence}
               activeEvidenceId={targetEvidenceDetailId}
               onCloseDetailModal={() => setTargetEvidenceDetailId(undefined)}
             />
@@ -325,6 +326,7 @@ export function CaseInvestigationClient({ slug }: CaseInvestigationClientProps) 
               askedQuestionIds={progress.askedQuestionIds}
               onAskQuestion={handleAskQuestion}
               onOpenEvidenceDetail={handleOpenEvidenceDetail}
+              onDiscoverEvidence={handleDiscoverEvidence}
             />
           )}
 

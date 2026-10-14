@@ -67,10 +67,34 @@ export const case4HollowSaint: Case = {
       {
         id: "hs-hs-5",
         evidenceId: "ev-405",
-        label: "Scorched Parish Register in Satchel",
+        label: "Crypt Padlock & Reversed Wear Marks",
         xPercent: 62,
         yPercent: 78,
-        previewText: "A leather satchel containing documents torn from diocesan vaults.",
+        previewText: "Subterranean ossuary padlocked door behind the altar with fresh graphite lubricant.",
+      },
+      {
+        id: "hs-hs-6",
+        evidenceId: "ev-406",
+        label: "Julian's Trench Coat Dictaphone",
+        xPercent: 44,
+        yPercent: 78,
+        previewText: "Micro-cassette tape recording the 1:38 AM confrontation and poison struggle.",
+      },
+      {
+        id: "hs-hs-7",
+        evidenceId: "ev-407",
+        label: "Blacksmith Belfry Schematics",
+        xPercent: 70,
+        yPercent: 65,
+        previewText: "Architectural blueprint from Silas Crowe's forge with red grease pencil marks.",
+      },
+      {
+        id: "hs-hs-8",
+        evidenceId: "ev-408",
+        label: "Diocesan Research Portfolio",
+        xPercent: 88,
+        yPercent: 55,
+        previewText: "Archival correspondence establishing Dr. Roy's competitive trail on the parish legend.",
       },
     ],
   },
@@ -311,6 +335,7 @@ export const case4HollowSaint: Case = {
           question: "Did you go into the chapel with Julian tonight?",
           response:
             "Julian told me to stay in the rectory study while he confronted Elias. He took his dictaphone. Then, at 2:13 AM, that dreadful bell rang out across the ridge. When I ran out, the chapel doors were bolted from inside!",
+          unlocksEvidenceId: "ev-406",
           revealsNote: "Mara confirms Julian went in alone with his dictaphone to confront Elias.",
         },
       ],
@@ -336,6 +361,7 @@ export const case4HollowSaint: Case = {
           question: "Did you see anyone near the chapel doors tonight?",
           response:
             "The front doors were barred tight as a tomb. But at 2:12 AM, right before the bell clanged, I saw Father Elias standing over by the churchyard yew tree. He jerked his hands, and the bell struck three times. I thought I was seeing a ghost.",
+          unlocksEvidenceId: "ev-407",
           revealsNote: "Silas witnessed Father Elias standing by the bell wire at 2:12 AM.",
         },
         {
@@ -368,6 +394,7 @@ export const case4HollowSaint: Case = {
           question: "Did you speak with Professor Vance tonight?",
           response:
             "He refused to see me. He called me from the post office at 6:00 PM saying he had found the 'missing link' that would make his career. I was jealous, yes—I wanted the discovery myself. But I would never murder for ink and parchment.",
+          unlocksEvidenceId: "ev-408",
         },
       ],
     },

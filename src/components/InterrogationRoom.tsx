@@ -21,6 +21,7 @@ interface InterrogationRoomProps {
   askedQuestionIds: string[];
   onAskQuestion: (questionId: string) => void;
   onOpenEvidenceDetail: (evidenceId: string) => void;
+  onDiscoverEvidence?: (evidenceId: string) => void;
 }
 
 export function InterrogationRoom({
@@ -29,6 +30,7 @@ export function InterrogationRoom({
   askedQuestionIds,
   onAskQuestion,
   onOpenEvidenceDetail,
+  onDiscoverEvidence,
 }: InterrogationRoomProps) {
   const [selectedSuspectId, setSelectedSuspectId] = useState<string>(
     currentCase.suspects[0]?.id || ""
@@ -47,6 +49,12 @@ export function InterrogationRoom({
     soundEngine.playClick();
     if (stage.exposesContradiction) {
       soundEngine.playContradictionExposed();
+    }
+    if (stage.unlocksEvidenceId && onDiscoverEvidence) {
+      if (!discoveredEvidenceIds.includes(stage.unlocksEvidenceId)) {
+        soundEngine.playEvidenceDiscovered();
+        onDiscoverEvidence(stage.unlocksEvidenceId);
+      }
     }
     setActiveStage(stage);
     onAskQuestion(stage.id);
@@ -271,6 +279,24 @@ export function InterrogationRoom({
                     <div className="bg-[#201E1A] border border-[#38342D] p-2.5 text-xs font-mono text-[#dfc38c]">
                       <span className="font-bold uppercase mr-1">DETECTIVE LOG UPDATED:</span>
                       {activeStage.revealsNote}
+                    </div>
+                  )}
+
+                  {activeStage.unlocksEvidenceId && (
+                    <div className="bg-[#1f1b14] border border-[#dfc38c] p-3 flex items-center justify-between gap-3 animate-in fade-in duration-200">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-[#dfc38c] shrink-0" />
+                        <span className="font-mono text-xs text-[#dfc38c]">
+                          <strong className="uppercase">NEW EXHIBIT SECURED:</strong>{" "}
+                          {currentCase.evidence.find((e) => e.id === activeStage.unlocksEvidenceId)?.title || activeStage.unlocksEvidenceId}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => onOpenEvidenceDetail(activeStage.unlocksEvidenceId!)}
+                        className="font-mono text-[11px] text-[#dfc38c] border border-[#dfc38c] px-2.5 py-1 hover:bg-[#dfc38c] hover:text-black transition-colors shrink-0"
+                      >
+                        EXAMINE EXHIBIT
+                      </button>
                     </div>
                   )}
                 </div>

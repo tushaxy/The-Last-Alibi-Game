@@ -49,6 +49,7 @@ export interface InterviewStage {
   question: string;
   response: string;
   requiredEvidenceId?: string; // Evidence needed to ask this question
+  unlocksEvidenceId?: string; // Evidence unlocked by asking this question
   unlockedByQuestionId?: string;
   revealsNote?: string;
   exposesContradiction?: boolean;

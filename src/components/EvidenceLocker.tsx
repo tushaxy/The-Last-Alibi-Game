@@ -27,6 +27,7 @@ interface EvidenceLockerProps {
   onToggleStar: (evidenceId: string) => void;
   onInspectEvidence: (evidenceId: string) => void;
   onSaveNote: (id: string, note: string) => void;
+  onDiscoverEvidence?: (evidenceId: string) => void;
   activeEvidenceId?: string;
   onCloseDetailModal?: () => void;
 }
@@ -40,6 +41,7 @@ export function EvidenceLocker({
   onToggleStar,
   onInspectEvidence,
   onSaveNote,
+  onDiscoverEvidence,
   activeEvidenceId,
   onCloseDetailModal,
 }: EvidenceLockerProps) {
@@ -170,12 +172,25 @@ export function EvidenceLocker({
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-[#9B958B] gap-2 p-4 text-center">
                       <Folder className="w-8 h-8 text-[#38342D]" />
-                      <span className="font-mono text-[10px] uppercase tracking-widest text-[#9B958B]">
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-[#dfc38c]">
                         UNRECOVERED FORENSIC LEAD
                       </span>
                       <span className="font-sans text-xs text-[#cdc5bb]">
-                        Explore crime scene or interrogations to unlock.
+                        Location: {ev.discoveryLocation}
                       </span>
+                      {onDiscoverEvidence && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            soundEngine.playEvidenceDiscovered();
+                            onDiscoverEvidence(ev.id);
+                            handleOpenDetail(ev);
+                          }}
+                          className="mt-1 font-mono text-[11px] text-[#dfc38c] bg-[#201E1A] border border-[#dfc38c] px-3 py-1 hover:bg-[#dfc38c] hover:text-black transition-colors"
+                        >
+                          + SECURE EXHIBIT LEAD
+                        </button>
+                      )}
                     </div>
                   )}
 
@@ -241,7 +256,19 @@ export function EvidenceLocker({
                     <ExternalLink className="w-3.5 h-3.5" />
                   </button>
                 ) : (
-                  <span className="font-mono text-[10px] text-[#9B958B]">PENDING DISCOVERY</span>
+                  <button
+                    onClick={() => {
+                      if (onDiscoverEvidence) {
+                        soundEngine.playEvidenceDiscovered();
+                        onDiscoverEvidence(ev.id);
+                        handleOpenDetail(ev);
+                      }
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#201E1A] border border-[#a52a2a] hover:border-[#dfc38c] text-[#ffdad7] hover:text-[#dfc38c] font-mono text-xs uppercase tracking-wider transition-colors"
+                  >
+                    <span>RECOVER LEAD</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </button>
                 )}
               </div>
             </div>

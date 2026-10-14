@@ -72,6 +72,22 @@ export const case3BlackoutRoom: Case = {
         yPercent: 38,
         previewText: "An open laptop with local storage recovery tools running in the terminal.",
       },
+      {
+        id: "bo-hs-6",
+        evidenceId: "ev-306",
+        label: "Concierge Intercom Voicemail System",
+        xPercent: 25,
+        yPercent: 85,
+        previewText: "Emergency phone recording capturing 10:09 PM struggle noises from the floor above.",
+      },
+      {
+        id: "bo-hs-7",
+        evidenceId: "ev-307",
+        label: "Whistleblower Regulatory Drive",
+        xPercent: 85,
+        yPercent: 78,
+        previewText: "An encrypted USB drive containing SEC whistleblower disclosures filed at 9:15 PM.",
+      },
     ],
   },
   evidence: [
@@ -278,6 +294,7 @@ export const case3BlackoutRoom: Case = {
           question: "Where were you during the 18 minutes of darkness?",
           response:
             "I was trapped in the public elevator between floors 38 and 39! The emergency bell was screaming and the ventilation fan stopped. Maintenance didn't get us out until nearly 10:30 PM. Ask the building engineer!",
+          unlocksEvidenceId: "ev-307",
         },
         {
           id: "int-maya-2",
@@ -310,6 +327,7 @@ export const case3BlackoutRoom: Case = {
           question: "What did you hear during the blackout, Mr. Khanna?",
           response:
             "At 10:08 PM, the floorboards above me started shuddering. It sounded like two men knocking over furniture and wrestling across the glass floor. I dialed the concierge immediately.",
+          unlocksEvidenceId: "ev-306",
         },
         {
           id: "int-ishaan-2",

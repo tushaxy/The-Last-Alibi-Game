@@ -72,6 +72,38 @@ export const case1LastTrain: Case = {
         yPercent: 78,
         previewText: "A partially opened drawer containing correspondence and carbon invoices.",
       },
+      {
+        id: "hs-6",
+        evidenceId: "ev-006",
+        label: "Dining Car Incident Ledger",
+        xPercent: 92,
+        yPercent: 70,
+        previewText: "Carriage service log documenting the 10:15 PM kitchen electrical fire and evacuation.",
+      },
+      {
+        id: "hs-7",
+        evidenceId: "ev-007",
+        label: "Altered Dining Receipt Slip",
+        xPercent: 26,
+        yPercent: 72,
+        previewText: "Marcus Reed's dinner carbon slip bearing suspicious hand-altered ink timestamps.",
+      },
+      {
+        id: "hs-8",
+        evidenceId: "ev-008",
+        label: "Dr. Cross's Physician Satchel",
+        xPercent: 72,
+        yPercent: 82,
+        previewText: "A leather medical bag with tamper ribbons and intact morphine hospital seals.",
+      },
+      {
+        id: "hs-9",
+        evidenceId: "ev-009",
+        label: "Clara's Shorthand Notebook",
+        xPercent: 12,
+        yPercent: 76,
+        previewText: "A reporter's notebook with contemporaneous logs of passenger corridor movements.",
+      },
     ],
   },
   evidence: [
@@ -319,6 +351,7 @@ export const case1LastTrain: Case = {
           question: "Can you account for your movements after 10:00 PM?",
           response:
             "I went straight to the Dining Car at 10:20 PM. I stayed there reading the paper and nursing a Glenfiddich until around 11:35 PM when the attendant announced the final station call. Here is my receipt.",
+          unlocksEvidenceId: "ev-007",
         },
         {
           id: "int-marcus-3",
@@ -360,6 +393,7 @@ export const case1LastTrain: Case = {
           question: "Did you examine Adrian Vale after he was discovered?",
           response:
             "Attendant Bell summoned me at 11:42 PM. Adrian had no pulse, his pupils were dilated, and his lips cyanotic. Rigor had already set in along his jaw. He had been dead for at least 45 minutes.",
+          unlocksEvidenceId: "ev-008",
         },
         {
           id: "int-simon-2",
@@ -398,6 +432,7 @@ export const case1LastTrain: Case = {
           question: "Did you see anyone enter Compartment B?",
           response:
             "Yes! At 10:25 PM, Marcus Reed went in carrying a portfolio. Around 10:42 PM, Marcus slipped out, paused by the transom louvre with raised hands, and hurried off toward Carriage A.",
+          unlocksEvidenceId: "ev-009",
           revealsNote: "Clara witnessed Marcus Reed exiting Adrian's compartment at 10:42 PM and tampering with the door frame.",
         },
       ],
@@ -423,6 +458,7 @@ export const case1LastTrain: Case = {
           question: "How did you discover the body at 11:40 PM?",
           response:
             "I knocked to prepare Mr. Vale's berth for the overnight leg. There was no answer. I tried my conductor master key, but the inside deadbolt was thrown solid. I peered through the louvre and saw him motionless in the chair.",
+          unlocksEvidenceId: "ev-006",
         },
         {
           id: "int-thomas-2",

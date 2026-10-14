@@ -72,6 +72,30 @@ export const case2Glasshouse: Case = {
         yPercent: 82,
         previewText: "A large galvanized cistern beneath the drainage gutter with disturbed silt.",
       },
+      {
+        id: "gh-hs-6",
+        evidenceId: "ev-206",
+        label: "Excised Orchid Specimen Stand",
+        xPercent: 15,
+        yPercent: 62,
+        previewText: "An empty glass terrarium in the rare flora wing with severed root stems.",
+      },
+      {
+        id: "gh-hs-7",
+        evidenceId: "ev-207",
+        label: "Generator Shed Work Order",
+        xPercent: 62,
+        yPercent: 88,
+        previewText: "Time-stamped maintenance telemetry log from the backup diesel generator outbuilding.",
+      },
+      {
+        id: "gh-hs-8",
+        evidenceId: "ev-208",
+        label: "Disputed Estate Will & Tavern Alibi",
+        xPercent: 88,
+        yPercent: 82,
+        previewText: "A solicitor's draft dividing Lord Marsh's estate and verified village alibi records.",
+      },
     ],
   },
   evidence: [
@@ -292,6 +316,7 @@ export const case2Glasshouse: Case = {
           question: "Did you visit your sister at the conservatory tonight?",
           response:
             "Good heavens, no. In this tempest? I took the 7:15 carriage into the village and spent three glorious hours taking shillings off the magistrate at the Red Lion billiards table. Ring up the landlord if you doubt me.",
+          unlocksEvidenceId: "ev-208",
         },
         {
           id: "int-julian-2",
@@ -323,6 +348,7 @@ export const case2Glasshouse: Case = {
           question: "Who had access to the master greenhouse key?",
           response:
             "Only Dr. Helena herself. She kept the brass mortise key on her belt ring. When the automated system engaged at 9:15 PM, nobody could enter through that iron portal without her key or tripping the gatehouse klaxon.",
+          unlocksEvidenceId: "ev-207",
         },
         {
           id: "int-victor-2",
@@ -355,6 +381,7 @@ export const case2Glasshouse: Case = {
           question: "Why did you visit Blackthorn Estate in a thunderstorm?",
           response:
             "Dr. Marsh invited me for a private viewing of her latest hybrid at 9:30 PM. But when I reached the glasshouse, the doors were locked and the lights were off. I swear I never entered the main pavilion.",
+          unlocksEvidenceId: "ev-206",
         },
         {
           id: "int-amelia-2",
