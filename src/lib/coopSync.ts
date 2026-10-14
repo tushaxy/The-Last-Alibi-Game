@@ -1,10 +1,11 @@
 "use client";
 
-import { BoardConnection, PlayerCaseProgress } from "@/types/game";
+import { BoardConnection } from "@/types/game";
 
 export interface CoopMember {
   id: string;
   name: string;
+  role?: string;
   isHost?: boolean;
 }
 
@@ -37,17 +38,33 @@ type StateListener = (state: Partial<CoopSyncState>, author: string) => void;
 type ActivityListener = (activity: CoopActivity) => void;
 type MembersListener = (members: CoopMember[]) => void;
 
+function normalizeRoomCode(raw: string): string {
+  const cleaned = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (!cleaned.startsWith("ALIBI")) {
+    return `ALIBI-${cleaned}`;
+  }
+  if (!cleaned.includes("-")) {
+    return `ALIBI-${cleaned.replace("ALIBI", "")}`;
+  }
+  return cleaned;
+}
+
 class CoopSyncManager {
   public roomCode: string | null = null;
   public memberId: string = "";
   public memberName: string = "Detective";
   public isHost: boolean = false;
   public isConnected: boolean = false;
+  public connectionType: "p2p" | "relay" | "local" = "local";
   public members: CoopMember[] = [];
   public activityFeed: CoopActivity[] = [];
 
   private broadcastChannel: BroadcastChannel | null = null;
   private pollInterval: NodeJS.Timeout | null = null;
+  private peer: any = null;
+  private peerConnections: Map<string, any> = new Map();
+  private hostConnection: any = null;
+
   private stateListeners: Set<StateListener> = new Set();
   private activityListeners: Set<ActivityListener> = new Set();
   private membersListeners: Set<MembersListener> = new Set();
@@ -103,11 +120,15 @@ class CoopSyncManager {
    * Create a new Co-Op Room as Host
    */
   public async createRoom(caseSlug: string, initialState: CoopSyncState): Promise<string> {
-    const code = `ALIBI-${Math.floor(1000 + Math.random() * 9000)}`;
+    const rawNumber = Math.floor(1000 + Math.random() * 9000);
+    const code = `ALIBI-${rawNumber}`;
     this.roomCode = code;
     this.isHost = true;
     this.isConnected = true;
+    this.members = [{ id: this.memberId, name: this.memberName, role: "Lead Detective", isHost: true }];
+    this.notifyMembers();
 
+    // 1. Post to API route
     try {
       await fetch(`/api/coop/${code}`, {
         method: "POST",
@@ -120,10 +141,11 @@ class CoopSyncManager {
         }),
       });
     } catch (e) {
-      console.warn("API room creation fallback:", e);
+      console.warn("API room creation notice:", e);
     }
 
-    this.initNetworking(code);
+    // 2. Initialize networking (WebRTC + BroadcastChannel + Polling)
+    await this.initNetworking(code, true, initialState);
     return code;
   }
 
@@ -131,10 +153,11 @@ class CoopSyncManager {
    * Join an existing Co-Op Room
    */
   public async joinRoom(code: string): Promise<boolean> {
-    const upperCode = code.trim().toUpperCase();
+    const upperCode = normalizeRoomCode(code);
     this.roomCode = upperCode;
     this.isHost = false;
 
+    // 1. Register with API relay
     try {
       const res = await fetch(`/api/coop/${upperCode}`, {
         method: "POST",
@@ -144,31 +167,29 @@ class CoopSyncManager {
         }),
       });
 
-      if (!res.ok) {
-        throw new Error("Room not found or full");
-      }
+      if (res.ok) {
+        const data = await res.json();
+        if (data.room) {
+          this.isConnected = true;
+          this.members = data.room.members;
+          this.notifyMembers();
 
-      const data = await res.json();
-      if (data.room) {
-        this.isConnected = true;
-        this.members = data.room.members;
-        this.notifyMembers();
-
-        if (data.room.state) {
-          this.notifyState(data.room.state, data.room.hostName || "Host");
+          if (data.room.state) {
+            this.notifyState(data.room.state, data.room.hostName || "Host");
+          }
         }
       }
     } catch (e) {
-      console.warn("Could not connect to room via API, using P2P channel:", e);
-      // Still allow peer channel if on same browser/network
-      this.isConnected = true;
+      console.warn("API join notice:", e);
     }
 
-    this.initNetworking(upperCode);
+    // 2. Initialize networking (WebRTC + BroadcastChannel + Polling)
+    await this.initNetworking(upperCode, false);
+    this.isConnected = true;
     return true;
   }
 
-  private initNetworking(code: string) {
+  private async initNetworking(code: string, asHost: boolean, initialState?: CoopSyncState) {
     // 1. BroadcastChannel for instant local cross-tab sync
     if (typeof window !== "undefined" && "BroadcastChannel" in window) {
       if (this.broadcastChannel) this.broadcastChannel.close();
@@ -182,6 +203,12 @@ class CoopSyncManager {
           this.handleIncomingAction(data.action);
         } else if (data.type === "MEMBER_PING") {
           this.handleMemberPing(data.member);
+        } else if (data.type === "REQUEST_FULL_STATE" && this.isHost && initialState) {
+          this.broadcastChannel?.postMessage({
+            type: "ACTION",
+            senderId: this.memberId,
+            action: { type: "STATE_SYNC", state: initialState, agentName: this.memberName },
+          });
         }
       };
 
@@ -191,11 +218,121 @@ class CoopSyncManager {
         senderId: this.memberId,
         member: { id: this.memberId, name: this.memberName, isHost: this.isHost },
       });
+
+      if (!asHost) {
+        this.broadcastChannel.postMessage({
+          type: "REQUEST_FULL_STATE",
+          senderId: this.memberId,
+        });
+      }
     }
 
-    // 2. Periodic poll / heartbeat to keep room in sync
+    // 2. WebRTC PeerJS Mesh Setup (for cross-network / Discord play)
+    this.setupWebRTCPeer(code, asHost, initialState).catch((e) => {
+      console.warn("WebRTC initialization fallback to API relay:", e);
+    });
+
+    // 3. Periodic API Polling / Heartbeat
     if (this.pollInterval) clearInterval(this.pollInterval);
-    this.pollInterval = setInterval(() => this.sendHeartbeat(), 3000);
+    this.pollInterval = setInterval(() => this.sendHeartbeat(), 2500);
+  }
+
+  private async setupWebRTCPeer(code: string, asHost: boolean, initialState?: CoopSyncState) {
+    if (typeof window === "undefined") return;
+
+    try {
+      const { Peer } = await import("peerjs");
+      const cleanId = code.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const hostPeerId = `alibi-v2-${cleanId}`;
+
+      if (asHost) {
+        if (this.peer) this.peer.destroy();
+        this.peer = new Peer(hostPeerId, {
+          debug: 0,
+          config: {
+            iceServers: [
+              { urls: "stun:stun.l.google.com:19302" },
+              { urls: "stun:stun1.l.google.com:19302" },
+            ],
+          },
+        });
+
+        this.peer.on("open", () => {
+          this.connectionType = "p2p";
+        });
+
+        this.peer.on("connection", (conn: any) => {
+          this.peerConnections.set(conn.peer, conn);
+
+          conn.on("open", () => {
+            // Send welcome with current state
+            conn.send({
+              type: "WELCOME",
+              hostMember: { id: this.memberId, name: this.memberName, isHost: true },
+              state: initialState,
+            });
+          });
+
+          conn.on("data", (data: any) => {
+            if (data?.type === "ACTION") {
+              this.handleIncomingAction(data.action);
+              // Relay to all other connected peers
+              this.peerConnections.forEach((otherConn) => {
+                if (otherConn.peer !== conn.peer && otherConn.open) {
+                  otherConn.send(data);
+                }
+              });
+            } else if (data?.type === "JOIN_GUEST") {
+              this.handleMemberPing(data.member);
+            }
+          });
+
+          conn.on("close", () => {
+            this.peerConnections.delete(conn.peer);
+          });
+        });
+
+        this.peer.on("error", (err: any) => {
+          // If host ID is already taken or failed, gracefully fallback to API relay
+          console.warn("WebRTC host setup notice:", err);
+        });
+      } else {
+        // Guest setup
+        if (this.peer) this.peer.destroy();
+        this.peer = new Peer({
+          debug: 0,
+          config: {
+            iceServers: [
+              { urls: "stun:stun.l.google.com:19302" },
+              { urls: "stun:stun1.l.google.com:19302" },
+            ],
+          },
+        });
+
+        this.peer.on("open", () => {
+          const conn = this.peer.connect(hostPeerId, { reliable: true });
+          this.hostConnection = conn;
+
+          conn.on("open", () => {
+            this.connectionType = "p2p";
+            conn.send({
+              type: "JOIN_GUEST",
+              member: { id: this.memberId, name: this.memberName },
+            });
+          });
+
+          conn.on("data", (data: any) => {
+            if (data?.type === "WELCOME" && data.state) {
+              this.notifyState(data.state, "Host Sync");
+            } else if (data?.type === "ACTION") {
+              this.handleIncomingAction(data.action);
+            }
+          });
+        });
+      }
+    } catch (e) {
+      console.warn("PeerJS load notice:", e);
+    }
   }
 
   private async sendHeartbeat() {
@@ -225,9 +362,11 @@ class CoopSyncManager {
   }
 
   private handleMemberPing(member: CoopMember) {
+    if (!member) return;
     if (!this.members.some((m) => m.id === member.id)) {
       this.members = [...this.members, member];
       this.notifyMembers();
+      this.addActivity(`${member.name} joined the investigation`);
     }
   }
 
@@ -245,15 +384,15 @@ class CoopSyncManager {
         break;
       case "SAVE_NOTE":
         this.notifyState({ playerNotes: { [action.id]: action.note } }, action.agentName);
-        this.addActivity(`${action.agentName} recorded detective note on [${action.id}]`);
+        this.addActivity(`${action.agentName} updated case note on [${action.id}]`);
         break;
       case "UPDATE_CONNECTIONS":
         this.notifyState({ connections: action.connections }, action.agentName);
-        this.addActivity(`${action.agentName} updated connections on the Corkboard`);
+        this.addActivity(`${action.agentName} connected leads on the Corkboard`);
         break;
       case "ASK_QUESTION":
         this.notifyState({ askedQuestionIds: [action.questionId] }, action.agentName);
-        this.addActivity(`${action.agentName} questioned suspect [${action.questionId}]`);
+        this.addActivity(`${action.agentName} cross-examined suspect [${action.questionId}]`);
         break;
       case "STATE_SYNC":
         this.notifyState(action.state, action.agentName);
@@ -267,7 +406,7 @@ class CoopSyncManager {
   public broadcastAction(action: CoopAction) {
     if (!this.roomCode || !this.isConnected) return;
 
-    // 1. Post to local BroadcastChannel
+    // 1. Post to local BroadcastChannel (for multiple tabs/windows)
     if (this.broadcastChannel) {
       this.broadcastChannel.postMessage({
         type: "ACTION",
@@ -276,7 +415,18 @@ class CoopSyncManager {
       });
     }
 
-    // 2. Post to API relay
+    // 2. Transmit over WebRTC DataChannel (for remote players over Discord)
+    if (this.isHost) {
+      this.peerConnections.forEach((conn) => {
+        if (conn.open) {
+          conn.send({ type: "ACTION", senderId: this.memberId, action });
+        }
+      });
+    } else if (this.hostConnection && this.hostConnection.open) {
+      this.hostConnection.send({ type: "ACTION", senderId: this.memberId, action });
+    }
+
+    // 3. Post to API relay
     fetch(`/api/coop/${this.roomCode}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -327,7 +477,7 @@ class CoopSyncManager {
 
   private addActivity(text: string) {
     const act: CoopActivity = {
-      id: `act-${Date.now()}-${Math.random()}`,
+      id: `act-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       agentName: this.memberName,
       text,
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
@@ -349,10 +499,16 @@ class CoopSyncManager {
       this.broadcastChannel.close();
       this.broadcastChannel = null;
     }
+    if (this.peer) {
+      this.peer.destroy();
+      this.peer = null;
+    }
     if (this.pollInterval) {
       clearInterval(this.pollInterval);
       this.pollInterval = null;
     }
+    this.peerConnections.clear();
+    this.hostConnection = null;
     this.roomCode = null;
     this.isConnected = false;
     this.isHost = false;
