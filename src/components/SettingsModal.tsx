@@ -171,33 +171,17 @@ export function SettingsModal({
           </div>
         </div>
 
-        {/* Difficulty Selection */}
-        {onDifficultyChange && (
-          <div className="border-t border-[#38342D] pt-4 mb-6">
-            <label className="block font-mono text-xs uppercase tracking-wider text-[#9B958B] mb-2">
-              INVESTIGATION DIFFICULTY PROFILE
-            </label>
-            <div className="grid grid-cols-4 gap-2">
-              {(["easy", "medium", "hard", "very-hard"] as Difficulty[]).map((d) => (
-                <button
-                  key={d}
-                  onClick={() => onDifficultyChange(d)}
-                  className={`py-2 text-xs font-mono uppercase tracking-wider border transition-all ${
-                    currentDifficulty === d
-                      ? "bg-[#b39a66]/20 border-[#dfc38c] text-[#dfc38c] font-bold"
-                      : "bg-[#201E1A] border-[#38342D] text-[#9B958B] hover:text-[#EAE3D5]"
-                  }`}
-                >
-                  {d}
-                </button>
-              ))}
-            </div>
-            <p className="font-mono text-[11px] text-[#9B958B] mt-2">
-              Note: Difficulty alters deductive hints and interview guidance. The canonical truth
-              remains identical across all levels.
-            </p>
+        {/* Attribution & System Info */}
+        <div className="border-t border-[#38342D] pt-4 mb-6 font-mono text-xs text-[#9B958B]">
+          <div className="flex justify-between items-center py-1">
+            <span>TERMINAL ARCHIVE:</span>
+            <span className="text-[#dfc38c]">VERITAS 1948 // v2.4</span>
           </div>
-        )}
+          <div className="flex justify-between items-center py-1">
+            <span>ATTRIBUTION:</span>
+            <span className="text-[#EAE3D5] font-bold">MADE BY @TUSHAR</span>
+          </div>
+        </div>
 
         {/* Reset Progress Section */}
         <div className="border-t border-[#38342D] pt-4">

@@ -5,14 +5,21 @@ import Link from "next/link";
 import { soundEngine } from "@/lib/audio";
 import { ALL_CASES } from "@/data/cases";
 import { SettingsModal } from "./SettingsModal";
-import { Volume2, VolumeX, Settings, ChevronDown, Lock, ShieldAlert } from "lucide-react";
+import { Volume2, VolumeX, Settings, ChevronDown, Lock, ShieldAlert, Terminal, Users } from "lucide-react";
 
 interface HeaderProps {
   activeCaseId?: string;
   onCaseReset?: () => void;
+  onOpenAITerminal?: () => void;
+  onOpenCoopModal?: () => void;
 }
 
-export function Header({ activeCaseId, onCaseReset }: HeaderProps) {
+export function Header({
+  activeCaseId,
+  onCaseReset,
+  onOpenAITerminal,
+  onOpenCoopModal,
+}: HeaderProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCaseDropdownOpen, setIsCaseDropdownOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -87,7 +94,7 @@ export function Header({ activeCaseId, onCaseReset }: HeaderProps) {
                     >
                       <div className="flex justify-between items-center">
                         <span>{c.caseNumber}</span>
-                        <span className="text-[10px] text-[#9B958B] uppercase">{c.defaultDifficulty}</span>
+                        <span className="text-[10px] text-[#dfc38c] font-mono">~{c.estimatedMinutes}m</span>
                       </div>
                       <div className="text-[11px] text-[#EAE3D5] truncate">{c.title}</div>
                     </Link>
@@ -98,14 +105,38 @@ export function Header({ activeCaseId, onCaseReset }: HeaderProps) {
           </div>
 
           {/* Right: Status & Interactive Controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {/* Status Stamp Badge */}
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1 bg-[#201E1A] border border-[#38342D]">
+            <div className="hidden xl:flex items-center gap-2 px-3 py-1 bg-[#201E1A] border border-[#38342D]">
               <span className="w-2 h-2 rounded-full bg-[#a52a2a] animate-pulse" />
               <span className="font-mono text-[10px] text-[#9B958B] tracking-widest uppercase">
                 {activeCase ? `${activeCase.title.toUpperCase()} // ACTIVE` : "DOSSIER UNSEALED • EVIDENCE LOCKED"}
               </span>
             </div>
+
+            {/* AI Inquisitor Terminal Button */}
+            {onOpenAITerminal && (
+              <button
+                onClick={onOpenAITerminal}
+                title="Open Veritas AI Inquisitor & Archive Terminal"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#201E1A] border border-[#dfc38c] text-[#dfc38c] hover:bg-[#dfc38c] hover:text-black font-mono text-[11px] uppercase tracking-wider font-bold transition-all shadow-sm"
+              >
+                <Terminal className="w-3.5 h-3.5 animate-pulse" />
+                <span className="hidden sm:inline">AI INQUISITOR</span>
+              </button>
+            )}
+
+            {/* Co-Op Squad Multiplayer Button */}
+            {onOpenCoopModal && (
+              <button
+                onClick={onOpenCoopModal}
+                title="Co-Op Investigation Squad (2-4 Players // Discord)"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1f1b29] border border-[#5865F2] text-[#9da6ff] hover:bg-[#5865F2] hover:text-white font-mono text-[11px] uppercase tracking-wider font-bold transition-all shadow-sm"
+              >
+                <Users className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">CO-OP SQUAD</span>
+              </button>
+            )}
 
             {/* Audio Toggle */}
             <button
@@ -114,7 +145,7 @@ export function Header({ activeCaseId, onCaseReset }: HeaderProps) {
               className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#201E1A] border border-[#38342D] hover:border-[#dfc38c] text-[#9B958B] hover:text-[#EAE3D5] transition-colors"
             >
               {isMuted ? <VolumeX className="w-4 h-4 text-[#a52a2a]" /> : <Volume2 className="w-4 h-4 text-[#dfc38c]" />}
-              <span className="font-mono text-[11px] hidden sm:inline uppercase tracking-wider">
+              <span className="font-mono text-[11px] hidden md:inline uppercase tracking-wider">
                 {isMuted ? "MUTE" : "TAPE REEL"}
               </span>
             </button>

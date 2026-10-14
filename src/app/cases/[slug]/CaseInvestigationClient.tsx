@@ -22,6 +22,10 @@ import { ConnectionBoard } from "@/components/ConnectionBoard";
 import { ContradictionScanner } from "@/components/ContradictionScanner";
 import { AccusationModal } from "@/components/AccusationModal";
 import { HintPanel } from "@/components/HintPanel";
+import { AITerminalModal } from "@/components/AITerminalModal";
+import { CoopModal } from "@/components/CoopModal";
+import { coopManager, CoopSyncState } from "@/lib/coopSync";
+import { soundEngine } from "@/lib/audio";
 import { Menu, X } from "lucide-react";
 
 interface CaseInvestigationClientProps {
@@ -39,6 +43,10 @@ export function CaseInvestigationClient({ slug }: CaseInvestigationClientProps) 
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
+  // Modals
+  const [isAITerminalOpen, setIsAITerminalOpen] = useState(false);
+  const [isCoopModalOpen, setIsCoopModalOpen] = useState(false);
+
   // Player Progress State (Hydration safe)
   const [progress, setProgress] = useState<PlayerCaseProgress>(() =>
     getDefaultCaseProgress(currentCase.id, currentCase.defaultDifficulty)
@@ -52,6 +60,50 @@ export function CaseInvestigationClient({ slug }: CaseInvestigationClientProps) 
   const [targetEvidenceDetailId, setTargetEvidenceDetailId] = useState<string | undefined>(
     undefined
   );
+
+  // Auto-join room from URL ?room=CODE
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const roomParam = params.get("room");
+      if (roomParam) {
+        setIsCoopModalOpen(true);
+        coopManager.joinRoom(roomParam).then(() => {
+          soundEngine.playEvidenceDiscovered();
+        });
+      }
+    }
+  }, []);
+
+  // Co-Op Real-time State Sync Listener
+  useEffect(() => {
+    const unsub = coopManager.onStateSync((syncedState, author) => {
+      soundEngine.playClick();
+      setProgress((prev) => {
+        const next: PlayerCaseProgress = {
+          ...prev,
+          discoveredEvidenceIds: Array.from(
+            new Set([...prev.discoveredEvidenceIds, ...(syncedState.discoveredEvidenceIds || [])])
+          ),
+          inspectedEvidenceIds: Array.from(
+            new Set([...prev.inspectedEvidenceIds, ...(syncedState.inspectedEvidenceIds || [])])
+          ),
+          starredEvidenceIds: syncedState.starredEvidenceIds ?? prev.starredEvidenceIds,
+          playerNotes: { ...prev.playerNotes, ...(syncedState.playerNotes || {}) },
+          connections: syncedState.connections ?? prev.connections,
+          askedQuestionIds: Array.from(
+            new Set([...prev.askedQuestionIds, ...(syncedState.askedQuestionIds || [])])
+          ),
+        };
+        saveCaseProgress(next);
+        return next;
+      });
+    });
+
+    return () => {
+      unsub();
+    };
+  }, []);
 
   // Elapsed Timer
   useEffect(() => {
@@ -74,11 +126,16 @@ export function CaseInvestigationClient({ slug }: CaseInvestigationClientProps) 
     });
   };
 
-  // Handlers
+  // Handlers with Co-op Broadcast
   const handleDiscoverEvidence = (evidenceId: string) => {
     if (!progress.discoveredEvidenceIds.includes(evidenceId)) {
       updateProgress({
         discoveredEvidenceIds: [...progress.discoveredEvidenceIds, evidenceId],
+      });
+      coopManager.broadcastAction({
+        type: "DISCOVER_EVIDENCE",
+        evidenceId,
+        agentName: coopManager.memberName,
       });
     }
   };
@@ -88,21 +145,36 @@ export function CaseInvestigationClient({ slug }: CaseInvestigationClientProps) 
       updateProgress({
         inspectedEvidenceIds: [...progress.inspectedEvidenceIds, evidenceId],
       });
+      coopManager.broadcastAction({
+        type: "INSPECT_EVIDENCE",
+        evidenceId,
+        agentName: coopManager.memberName,
+      });
     }
   };
 
   const handleToggleStarEvidence = (evidenceId: string) => {
     const isStarred = progress.starredEvidenceIds.includes(evidenceId);
-    updateProgress({
-      starredEvidenceIds: isStarred
-        ? progress.starredEvidenceIds.filter((id) => id !== evidenceId)
-        : [...progress.starredEvidenceIds, evidenceId],
+    const nextStarred = isStarred
+      ? progress.starredEvidenceIds.filter((id) => id !== evidenceId)
+      : [...progress.starredEvidenceIds, evidenceId];
+    updateProgress({ starredEvidenceIds: nextStarred });
+    coopManager.broadcastAction({
+      type: "TOGGLE_STAR",
+      evidenceId,
+      agentName: coopManager.memberName,
     });
   };
 
   const handleSaveNote = (id: string, note: string) => {
     updateProgress({
       playerNotes: { ...progress.playerNotes, [id]: note },
+    });
+    coopManager.broadcastAction({
+      type: "SAVE_NOTE",
+      id,
+      note,
+      agentName: coopManager.memberName,
     });
   };
 
@@ -111,31 +183,45 @@ export function CaseInvestigationClient({ slug }: CaseInvestigationClientProps) 
       updateProgress({
         askedQuestionIds: [...progress.askedQuestionIds, questionId],
       });
+      coopManager.broadcastAction({
+        type: "ASK_QUESTION",
+        questionId,
+        agentName: coopManager.memberName,
+      });
     }
   };
 
   const handleAddConnection = (conn: BoardConnection) => {
-    updateProgress({
-      connections: [...progress.connections, conn],
+    const nextConns = [...progress.connections, conn];
+    updateProgress({ connections: nextConns });
+    coopManager.broadcastAction({
+      type: "UPDATE_CONNECTIONS",
+      connections: nextConns,
+      agentName: coopManager.memberName,
     });
   };
 
   const handleRemoveConnection = (connId: string) => {
-    updateProgress({
-      connections: progress.connections.filter((c) => c.id !== connId),
+    const nextConns = progress.connections.filter((c) => c.id !== connId);
+    updateProgress({ connections: nextConns });
+    coopManager.broadcastAction({
+      type: "UPDATE_CONNECTIONS",
+      connections: nextConns,
+      agentName: coopManager.memberName,
     });
   };
 
   const handleResetBoard = () => {
     updateProgress({ connections: [] });
+    coopManager.broadcastAction({
+      type: "UPDATE_CONNECTIONS",
+      connections: [],
+      agentName: coopManager.memberName,
+    });
   };
 
   const handleUseHint = () => {
     updateProgress({ hintsUsed: progress.hintsUsed + 1 });
-  };
-
-  const handleDifficultyChange = (d: Difficulty) => {
-    updateProgress({ difficulty: d });
   };
 
   const handleAccusationSubmitted = (result: AccusationResult) => {
@@ -161,7 +247,12 @@ export function CaseInvestigationClient({ slug }: CaseInvestigationClientProps) 
   return (
     <div className="min-h-screen flex flex-col bg-[#10100F] text-[#EAE3D5]">
       {/* Top Header */}
-      <Header activeCaseId={currentCase.id} onCaseReset={handleReplayCase} />
+      <Header
+        activeCaseId={currentCase.id}
+        onCaseReset={handleReplayCase}
+        onOpenAITerminal={() => setIsAITerminalOpen(true)}
+        onOpenCoopModal={() => setIsCoopModalOpen(true)}
+      />
 
       {/* Main Investigation Workspace */}
       <div className="flex-1 pt-16 flex relative">
@@ -183,6 +274,8 @@ export function CaseInvestigationClient({ slug }: CaseInvestigationClientProps) 
               ),
             }}
             isSolved={progress.isSolved}
+            onOpenAITerminal={() => setIsAITerminalOpen(true)}
+            onOpenCoopModal={() => setIsCoopModalOpen(true)}
           />
         </div>
 
@@ -239,6 +332,14 @@ export function CaseInvestigationClient({ slug }: CaseInvestigationClientProps) 
                   ),
                 }}
                 isSolved={progress.isSolved}
+                onOpenAITerminal={() => {
+                  setIsAITerminalOpen(true);
+                  setIsMobileSidebarOpen(false);
+                }}
+                onOpenCoopModal={() => {
+                  setIsCoopModalOpen(true);
+                  setIsMobileSidebarOpen(false);
+                }}
               />
             </div>
           </div>
@@ -253,8 +354,8 @@ export function CaseInvestigationClient({ slug }: CaseInvestigationClientProps) 
               <span className="text-[#EAE3D5] font-serif font-bold text-sm hidden sm:inline">
                 {currentCase.title}
               </span>
-              <span className="bg-[#201E1A] px-2 py-0.5 border border-[#38342D] text-[10px] text-[#9B958B] uppercase">
-                DIFFICULTY: {progress.difficulty}
+              <span className="bg-[#201E1A] px-2 py-0.5 border border-[#38342D] text-[10px] text-[#dfc38c] uppercase tracking-wider">
+                DOSSIER // RESTRICTED
               </span>
             </div>
 
@@ -287,8 +388,6 @@ export function CaseInvestigationClient({ slug }: CaseInvestigationClientProps) 
           {activeTab === "overview" && (
             <CaseOverview
               currentCase={currentCase}
-              difficulty={progress.difficulty}
-              onDifficultyChange={handleDifficultyChange}
               onNavigateTab={setActiveTab}
               evidenceDiscoveredCount={progress.discoveredEvidenceIds.length}
             />
@@ -371,6 +470,31 @@ export function CaseInvestigationClient({ slug }: CaseInvestigationClientProps) 
           )}
         </main>
       </div>
+
+      {/* Veritas AI Terminal Modal */}
+      <AITerminalModal
+        currentCase={currentCase}
+        discoveredEvidenceIds={progress.discoveredEvidenceIds}
+        onDiscoverEvidence={handleDiscoverEvidence}
+        onOpenEvidenceDetail={handleOpenEvidenceDetail}
+        isOpen={isAITerminalOpen}
+        onClose={() => setIsAITerminalOpen(false)}
+      />
+
+      {/* Co-Op Squad Multiplayer Modal */}
+      <CoopModal
+        currentCase={currentCase}
+        progress={progress}
+        isOpen={isCoopModalOpen}
+        onClose={() => setIsCoopModalOpen(false)}
+        onStateSynced={(synced) => {
+          setProgress((prev) => {
+            const next = { ...prev, ...synced };
+            saveCaseProgress(next);
+            return next;
+          });
+        }}
+      />
 
       {/* Footer */}
       <Footer />

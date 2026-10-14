@@ -39,7 +39,7 @@ export function HintPanel({
               INVESTIGATIVE HINT SYSTEM
             </span>
             <span className="font-mono text-[10px] text-[#9B958B] ml-2">
-              [{hintsUsed} OF {hintsForDifficulty.length} REVEALED // PROFILE: {difficulty.toUpperCase()}]
+              [{hintsUsed} OF {hintsForDifficulty.length} REVEALED // ARCHIVE CONSULT]
             </span>
           </div>
         </div>
@@ -53,8 +53,8 @@ export function HintPanel({
       {isOpen && (
         <div className="p-4 pt-0 border-t border-[#38342D] space-y-3 animate-in fade-in duration-150">
           <p className="font-sans text-xs text-[#9B958B] leading-relaxed">
-            Three progressive forensic nudges adapted to your selected difficulty level ({difficulty}).
-            Requesting hints will subtly adjust your final detective rating.
+            Three progressive forensic nudges compiled by Archival Intelligence to break stalled investigations.
+            Requesting hints will subtly adjust your final performance evaluation.
           </p>
 
           <div className="space-y-2">

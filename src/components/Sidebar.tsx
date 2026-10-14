@@ -14,6 +14,8 @@ import {
   CheckCircle2,
   Archive,
   BookOpen,
+  Terminal,
+  Radio,
 } from "lucide-react";
 
 export type TabType =
@@ -33,6 +35,8 @@ interface SidebarProps {
   evidenceCount?: { discovered: number; total: number };
   interrogationCount?: { answered: number; total: number };
   isSolved?: boolean;
+  onOpenAITerminal?: () => void;
+  onOpenCoopModal?: () => void;
 }
 
 export function Sidebar({
@@ -42,6 +46,8 @@ export function Sidebar({
   evidenceCount,
   interrogationCount,
   isSolved,
+  onOpenAITerminal,
+  onOpenCoopModal,
 }: SidebarProps) {
   const navItems: { id: TabType; label: string; icon: React.ReactNode; badge?: string }[] = [
     {
@@ -137,8 +143,44 @@ export function Sidebar({
           </nav>
         </div>
 
+        {/* Tactical Squad & AI Inquisitor Utilities */}
+        <div className="px-3 border-t border-[#38342D] pt-3 pb-1 space-y-1.5">
+          <div className="font-mono text-[10px] text-[#9B958B] uppercase tracking-widest px-3 mb-1">
+            INTELLIGENCE OPS
+          </div>
+          {onOpenAITerminal && (
+            <button
+              onClick={onOpenAITerminal}
+              className="w-full flex items-center justify-between px-3 py-2 text-xs font-mono text-[#dfc38c] bg-[#191816] border border-[#dfc38c]/40 hover:border-[#dfc38c] hover:bg-[#201E1A] transition-all"
+            >
+              <div className="flex items-center gap-2">
+                <Terminal className="w-4 h-4 text-[#dfc38c] animate-pulse" />
+                <span className="font-bold">AI Inquisitor</span>
+              </div>
+              <span className="text-[9px] bg-[#dfc38c]/20 text-[#dfc38c] px-1.5 py-0.5 border border-[#dfc38c]/40 font-bold">
+                0-API
+              </span>
+            </button>
+          )}
+
+          {onOpenCoopModal && (
+            <button
+              onClick={onOpenCoopModal}
+              className="w-full flex items-center justify-between px-3 py-2 text-xs font-mono text-[#9da6ff] bg-[#191724] border border-[#5865F2]/40 hover:border-[#5865F2] hover:bg-[#201c30] transition-all"
+            >
+              <div className="flex items-center gap-2">
+                <Radio className="w-4 h-4 text-[#5865F2]" />
+                <span className="font-bold">Co-Op Squad</span>
+              </div>
+              <span className="text-[9px] bg-[#5865F2]/20 text-[#9da6ff] px-1.5 py-0.5 border border-[#5865F2]/40 font-bold">
+                2-4P
+              </span>
+            </button>
+          )}
+        </div>
+
         {/* Case Repository Section */}
-        <div className="px-3 border-t border-[#38342D] pt-4">
+        <div className="px-3 border-t border-[#38342D] pt-3">
           <div className="font-mono text-[10px] text-[#9B958B] uppercase tracking-widest px-3 mb-2">
             ARCHIVE REPOSITORY
           </div>

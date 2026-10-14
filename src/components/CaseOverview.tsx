@@ -7,8 +7,8 @@ import { Clock, ShieldAlert, Users, Search, Compass, AlertOctagon, HelpCircle } 
 
 interface CaseOverviewProps {
   currentCase: Case;
-  difficulty: Difficulty;
-  onDifficultyChange: (d: Difficulty) => void;
+  difficulty?: Difficulty;
+  onDifficultyChange?: (d: Difficulty) => void;
   onNavigateTab: (tab: TabType) => void;
   evidenceDiscoveredCount: number;
 }
@@ -38,24 +38,12 @@ export function CaseOverview({
               </span>
             </div>
 
-            {/* Difficulty Selector */}
-            <div className="flex items-center gap-1.5 bg-[#201E1A] p-1 border border-[#38342D]">
-              <span className="font-mono text-[10px] text-[#9B958B] px-2 uppercase">
-                DIFFICULTY:
+            {/* Estimated Playtime Badge */}
+            <div className="flex items-center gap-2 bg-[#201E1A] px-3 py-1.5 border border-[#38342D] font-mono text-xs">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#dfc38c] animate-pulse" />
+              <span className="text-[#dfc38c] uppercase tracking-wider font-bold">
+                EST. DURATION: {currentCase.estimatedMinutes} MIN
               </span>
-              {(["easy", "medium", "hard", "very-hard"] as Difficulty[]).map((d) => (
-                <button
-                  key={d}
-                  onClick={() => onDifficultyChange(d)}
-                  className={`px-2 py-1 text-[11px] font-mono uppercase transition-colors ${
-                    difficulty === d
-                      ? "bg-[#b39a66]/30 border border-[#dfc38c] text-[#dfc38c] font-bold"
-                      : "text-[#9B958B] hover:text-[#EAE3D5]"
-                  }`}
-                >
-                  {d}
-                </button>
-              ))}
             </div>
           </div>
 
