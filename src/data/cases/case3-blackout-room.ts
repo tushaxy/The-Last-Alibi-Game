@@ -13,8 +13,7 @@ export const case3BlackoutRoom: Case = {
   incidentLocation: "Penthouse 42 // The Meridian High-Rise, Financial District",
   defaultDifficulty: "hard",
   estimatedMinutes: 50,
-  coverImage:
-    "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1200&q=80",
+  coverImage: "/images/covers/case3-cover.jpg",
   victim: {
     name: "Rohan Mehta",
     age: 38,
@@ -22,13 +21,11 @@ export const case3BlackoutRoom: Case = {
     causeOfDeath: "Asphyxiation via Heavy Shielded Fiber Cable (Struggled at 10:08 PM)",
     summary:
       "A brilliant, paranoid tech founder who built an encrypted treasury platform. He lived in a penthouse protected by biometric locks and constant digital logging.",
-    portrait:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
+    portrait: "/photos/rohan-mehta.png",
   },
   crimeScene: {
     title: "Penthouse 42 Living Area & Server Alcove",
-    image:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/scenes/case3-penthouse-scene.jpg",
     description:
       "A minimalist luxury penthouse overlooking the darkened metropolis. Floor-to-ceiling glass windows reflect emergency vehicle lights far below. Rohan Mehta lies beside the polished server credenza, an ethernet cable severed on the rug. The backup emergency track lighting casts harsh amber shadows across the scene.",
     hotspots: [
@@ -236,8 +233,7 @@ export const case3BlackoutRoom: Case = {
       id: "sus-dev",
       name: "Dev Arora",
       occupation: "Personal Assistant & Operations Manager",
-      portrait:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/dev-arora.png",
       relationshipToVictim: "Trusted personal aide for 6 years with master keycard access.",
       publicMotive:
         "Siphoned $4.2M in company crypto into an offshore cold wallet; Rohan had scheduled an ultimatum.",
@@ -277,8 +273,7 @@ export const case3BlackoutRoom: Case = {
       id: "sus-maya",
       name: "Maya Kapoor",
       occupation: "Co-Founder & Chief Technology Officer",
-      portrait:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/maya-kapoor.png",
       relationshipToVictim: "Co-founder of 8 years; escalating corporate dispute.",
       publicMotive:
         "Discovered Rohan's platform had multi-million dollar accounting discrepancies.",
@@ -310,8 +305,7 @@ export const case3BlackoutRoom: Case = {
       id: "sus-ishaan",
       name: "Ishaan Khanna",
       occupation: "Floor 41 Neighbor & Venture Investor",
-      portrait:
-        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/ishaan-khanna.png",
       relationshipToVictim: "Neighbor directly beneath the penthouse.",
       publicMotive:
         "Rohan had recently pulled out of a major funding round for Ishaan's fund.",
@@ -343,8 +337,7 @@ export const case3BlackoutRoom: Case = {
       id: "sus-rhea",
       name: "Rhea Sen",
       occupation: "Former Partner & Design Director",
-      portrait:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/rhea-sen.png",
       relationshipToVictim: "Ex-fiancée and shareholder.",
       publicMotive:
         "Bitter romantic breakup involving disputed penthouse tenancy rights.",

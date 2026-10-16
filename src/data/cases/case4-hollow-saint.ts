@@ -13,8 +13,7 @@ export const case4HollowSaint: Case = {
   incidentLocation: "Sanctuary of Saint Jude-in-the-Fens // Blackwood Ridge",
   defaultDifficulty: "very-hard",
   estimatedMinutes: 65,
-  coverImage:
-    "https://images.unsplash.com/photo-1548625361-195fe579b191?auto=format&fit=crop&w=1200&q=80",
+  coverImage: "/images/covers/case4-cover.jpg",
   victim: {
     name: "Professor Julian Vance",
     age: 56,
@@ -22,13 +21,11 @@ export const case4HollowSaint: Case = {
     causeOfDeath: "Aconite Alkaloid Poisoning (Administered in altar sacramental wine)",
     summary:
       "A renowned, obsessive historical researcher who spent five years tracking church archives across the diocese. He was on the verge of proving what truly occurred during the 1998 caretaker disappearance.",
-    portrait:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+    portrait: "/photos/professor-julian-vance.png",
   },
   crimeScene: {
     title: "Sanctuary Altar & Confessional Stone Wall",
-    image:
-      "https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/scenes/case4-sanctuary-scene.jpg",
     description:
       "Gothic stone sanctuary illuminated only by guttering tallow candles and moonlight piercing stained glass. Professor Julian Vance lies before the carved communion rail, a silver chalice overturned. The towering oak entrance door is secured with two massive iron drop-bars that can only be positioned from the interior. Ancient ivy clings to the exterior walls leading up to the silent belfry.",
     hotspots: [
@@ -263,8 +260,7 @@ export const case4HollowSaint: Case = {
       id: "sus-elias",
       name: "Father Elias (Brother Thomas)",
       occupation: "Resident Caretaker & Parish Priest",
-      portrait:
-        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/father-elias.png",
       relationshipToVictim: "Guardian of the chapel archive; Julian Vance's primary interview subject.",
       publicMotive:
         "Prevent the exposure of his true identity: he murdered the real Father Elias in 1998 and stole his life.",
@@ -312,8 +308,7 @@ export const case4HollowSaint: Case = {
       id: "sus-mara",
       name: "Mara Voss",
       occupation: "Associate Historian & Archive Specialist",
-      portrait:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/mara-voss.png",
       relationshipToVictim: "Co-investigator and former doctoral student of Julian Vance.",
       publicMotive:
         "Julian had threatened to claim sole credit for the archival discovery and withhold her doctoral endorsement.",
@@ -344,8 +339,7 @@ export const case4HollowSaint: Case = {
       id: "sus-silas",
       name: "Silas Crowe",
       occupation: "Local Blacksmith & Church Warden",
-      portrait:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/silas-crowe.png",
       relationshipToVictim: "Silas's family has forged ironwork for the chapel for three generations.",
       publicMotive:
         "Protect the chapel's folkloric reputation from outsider debunking.",
@@ -377,8 +371,7 @@ export const case4HollowSaint: Case = {
       id: "sus-anika",
       name: "Dr. Anika Roy",
       occupation: "Diocesan Historian & Rival Researcher",
-      portrait:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/dr-anika-roy.png",
       relationshipToVictim: "Colleague and rival researcher on parish archives.",
       publicMotive:
         "Wanted the glory of publishing the definitive solution to the 1998 disappearance.",

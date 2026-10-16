@@ -13,8 +13,7 @@ export const case2Glasshouse: Case = {
   incidentLocation: "Blackthorn Conservatory // Marsh Country Estate",
   defaultDifficulty: "medium",
   estimatedMinutes: 40,
-  coverImage:
-    "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=1200&q=80",
+  coverImage: "/images/covers/case2-cover.jpg",
   victim: {
     name: "Dr. Helena Marsh",
     age: 48,
@@ -22,13 +21,11 @@ export const case2Glasshouse: Case = {
     causeOfDeath: "Blunt Cranial Trauma (Cast-iron soil tamper)",
     summary:
       "A renowned, domineering botanist famous for synthesizing rare orchid hybrids. She ruthlessly controlled the family estate, her brother's finances, and the academic careers of her staff.",
-    portrait:
-      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80",
+    portrait: "/photos/dr-helena-marsh.png",
   },
   crimeScene: {
     title: "Blackthorn Conservatory — Tropical Pavilion",
-    image:
-      "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/scenes/case2-glasshouse-scene.jpg",
     description:
       "A soaring 19th-century wrought-iron greenhouse filled with exotic tropical palms and orchids. Rain batters violently against hundreds of glass panes. Dr. Marsh lies beside the central stone fountain, surrounded by shattered terra-cotta pots. The massive iron entrance door has a heavy mortise deadbolt and security contact sensor.",
     hotspots: [
@@ -105,8 +102,7 @@ export const case2Glasshouse: Case = {
       category: "physical",
       description:
         "The wall-mounted greenhouse thermometer reads 35°C (95°F) despite the freezing November storm outside. The steam heating regulator valve was manually wedged open to maximum.",
-      image:
-        "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80",
+      image: "/images/evidence/ev-201.jpg",
       discoveryLocation: "Iron column near the entrance door",
       availableObservations: [
         "Temperature Anomaly: Standard greenhouse temperature is maintained at 20°C for orchids. 35°C is dangerously hot for flora.",
@@ -258,15 +254,14 @@ export const case2Glasshouse: Case = {
       id: "sus-nora",
       name: "Nora Bell",
       occupation: "Research Botanist & Laboratory Assistant",
-      portrait:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/nora-bell.png",
       relationshipToVictim: "Protégée and co-researcher for four years.",
       publicMotive:
         "Dr. Marsh stole her life's work on orchid hybridization and threatened to blacklist her from academia.",
       privateHistory:
         "Nora had sacrificed her personal savings to finance the Blackthorn hybrid experiments. When Helena took full credit, Nora snapped.",
       alibi:
-        "Claims she was sitting by the fire in the manor library reading Linnaeus from 8:00 PM until 10:30 PM.",
+        "Claims she spent the entire period in the manor library reading Linnaeus from 8:00 PM until 10:30 PM.",
       actualActions:
         "Met Helena in the greenhouse at 8:45 PM, killed her with the tamper at 8:50 PM, hid the tamper, cranked the heaters, locked the door, and tripped the breaker at 9:11 PM to return unnoticed.",
       interviewStages: [
@@ -299,8 +294,7 @@ export const case2Glasshouse: Case = {
       id: "sus-julian",
       name: "Julian Marsh",
       occupation: "Victim's Estranged Brother",
-      portrait:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/julian-marsh.png",
       relationshipToVictim: "Younger brother, financially dependent on the Marsh trust.",
       publicMotive:
         "Stands to inherit Blackthorn Manor and the remaining trust funds upon Helena's death.",
@@ -331,8 +325,7 @@ export const case2Glasshouse: Case = {
       id: "sus-victor",
       name: "Victor Hale",
       occupation: "Blackthorn Estate Manager",
-      portrait:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/victor-hale.png",
       relationshipToVictim: "Estate manager of 12 years.",
       publicMotive:
         "Helena was threatening to evict his family from the gatehouse cottage over maintenance audits.",
@@ -364,8 +357,7 @@ export const case2Glasshouse: Case = {
       id: "sus-amelia",
       name: "Amelia Frost",
       occupation: "Exotic Plant Collector & Socialite",
-      portrait:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/amelia-frost.png",
       relationshipToVictim: "Rival collector and private patron.",
       publicMotive:
         "Wanted to acquire the black orchid *Cattleya vesta* at any price.",

@@ -13,8 +13,7 @@ export const case1LastTrain: Case = {
   incidentLocation: "First-Class Carriage B // Zurich-Vienna Night Express",
   defaultDifficulty: "easy",
   estimatedMinutes: 25,
-  coverImage:
-    "https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=1200&q=80",
+  coverImage: "/images/covers/case1-cover.jpg",
   victim: {
     name: "Adrian Vale",
     age: 52,
@@ -22,13 +21,11 @@ export const case1LastTrain: Case = {
     causeOfDeath: "Acute Digitalis Glycoside Poisoning (Administered in vintage port)",
     summary:
       "A fastidious and ruthless antiquities collector who made a fortune sourcing rare Byzantine artifacts. Known to maintain meticulous accounts and keep enemies close.",
-    portrait:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+    portrait: "/photos/adrian-vale.png",
   },
   crimeScene: {
     title: "Compartment B — First Class Carriage",
-    image:
-      "https://images.unsplash.com/photo-1541888946425-d0fbb186c5f7?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/scenes/case1-train-scene.jpg",
     description:
       "The mahogany-paneled compartment is dimly lit by a brass sconce. Adrian Vale sits slouched in the velvet corner armchair, a half-empty crystal tumbler of tawny port beside him on the burled walnut folding desk. The corridor door features an overhead ventilation louvre and a heavy brass slide deadbolt.",
     hotspots: [
@@ -113,8 +110,7 @@ export const case1LastTrain: Case = {
       category: "physical",
       description:
         "Adrian Vale's antique Swiss pocket watch. The crystal lens is cracked across the face, and both hands are frozen precisely at 11:42 PM.",
-      image:
-        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80",
+      image: "/images/evidence/ev-001.jpg",
       discoveryLocation: "On the walnut folding table beside the victim's left hand",
       availableObservations: [
         "Visual Inspection: The crystal face is cracked, hands pointed to 11:42.",
@@ -133,8 +129,7 @@ export const case1LastTrain: Case = {
       category: "forensic",
       description:
         "Half-drained tumbler of vintage port. Analysis of the sediment reveals a lethal concentration of purified digitalis glycoside.",
-      image:
-        "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=600&q=80",
+      image: "/images/evidence/ev-002.jpg",
       discoveryLocation: "Walnut folding desk inside Compartment B",
       availableObservations: [
         "Chemical Screen: High concentration of Foxglove (digitalis) extract.",
@@ -153,8 +148,7 @@ export const case1LastTrain: Case = {
       category: "physical",
       description:
         "A 3-inch strand of frayed olive-green waxed binding thread caught in the interior brass slat of the door ventilation louvre directly above the deadbolt.",
-      image:
-        "https://images.unsplash.com/photo-1594904351111-a072f80b1a71?auto=format&fit=crop&w=600&q=80",
+      image: "/images/evidence/ev-003.jpg",
       discoveryLocation: "Ventilation louvre above Compartment B sliding door",
       availableObservations: [
         "Fiber Test: High-tensile linen thread treated with green beeswax, commonly used by antiquities bookbinders and archivist portfolios.",
@@ -290,8 +284,7 @@ export const case1LastTrain: Case = {
       id: "sus-eleanor",
       name: "Eleanor Vale",
       occupation: "Estranged Wife & Beneficiary",
-      portrait:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/eleanor-vale.png",
       relationshipToVictim: "Separated spouse of 14 years; currently negotiating a bitter financial divorce.",
       publicMotive:
         "Stands to inherit Adrian's entire estate under a 1938 will that had not yet been modified.",
@@ -328,8 +321,7 @@ export const case1LastTrain: Case = {
       id: "sus-marcus",
       name: "Marcus Reed",
       occupation: "Antiquities Business Partner",
-      portrait:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/marcus-reed.png",
       relationshipToVictim: "Junior partner at Vale & Reed Fine Antiquities.",
       publicMotive:
         "Facing exposure for massive embezzlement and art forgery that Adrian was about to report.",
@@ -376,8 +368,7 @@ export const case1LastTrain: Case = {
       id: "sus-simon",
       name: "Dr. Simon Cross",
       occupation: "Retired Railway Surgeon",
-      portrait:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/dr-simon-cross.png",
       relationshipToVictim: "Casual acquaintance through the Zurich Antiquarian Society.",
       publicMotive:
         "Adrian had outbid him on an irreplaceable 16th-century anatomical treatise.",
@@ -409,8 +400,7 @@ export const case1LastTrain: Case = {
       id: "sus-clara",
       name: "Clara Finch",
       occupation: "Investigative Journalist",
-      portrait:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/clara-finch.png",
       relationshipToVictim: "Investigating Adrian Vale's syndicate for the Vienna Daily Chronicle.",
       publicMotive:
         "Adrian had threatened to file criminal libel charges against her newspaper.",
@@ -441,8 +431,7 @@ export const case1LastTrain: Case = {
       id: "sus-thomas",
       name: "Thomas Bell",
       occupation: "First-Class Carriage Attendant",
-      portrait:
-        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80",
+      portrait: "/photos/thomas-bell.png",
       relationshipToVictim: "Attendant responsible for First-Class Carriage B.",
       publicMotive:
         "Adrian had reported him for alleged passenger luggage pilfering on the previous month's run.",
